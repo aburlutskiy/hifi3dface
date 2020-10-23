@@ -69,34 +69,55 @@ This repository provides the python code and 3DMM of the following paper:
     ```
     git clone https://github.com/tencent-ailab/hifi3dface.git
     cd hifi3dface
-    bash install.sh
+    bin/setup.sh  # To unzip the files and build the Docker image
+    bin/docker-shell.sh  # To enter the Docker container and WORK
     ```
-    The script in **install.sh** installs all packages required to run our code, and compiles the c++ kernel of the differentiable renderer provided by [tf_mesh_renderer](https://github.com/google/tf_mesh_renderer).
-    Pay attention to finding the correct path to **TF_INC** and **TF_LIB**. The path specified in **install.sh** might not suit your case. If it does not work, please try to fix them manually. If your g++ version is greater than 4, please delete "-D_GLIBCXX_USE_CXX11_ABI=0" ( Line 9 ) in **install.sh**.
-    You can also compile the code using the method provided by [**tf_mesh_renderer**](https://github.com/google/tf_mesh_renderer). 
+
+You can skip the **zip files automatic unzipping** using:
+
+    export SKIP_ZIP=1
+
+before running `bin/setup.sh` script.
+
+
+**bin/compile.sh** compiles the c++ kernel of the differentiable renderer provided by [tf_mesh_renderer](https://github.com/google/tf_mesh_renderer).
+
+You can also compile the code using the method provided by [**tf_mesh_renderer**](https://github.com/google/tf_mesh_renderer). 
 
 - **Downloads**
 
-    You will need to download the following files to run our code: 
+You will need to download the following files to run our code: 
 
-    - Download our **3DMM** (5.4GB) and unzip it to the **./3DMM** floder: [Google Drive](https://drive.google.com/file/d/18BU5y5q3-MFJYARdSWLBjRBLKO1ZbrTH/view?usp=sharing), or [**腾讯微云**](https://share.weiyun.com/ByrUzsJG)
-    - Download the **resources.zip** (2GB) into the repo root directory **./** and unzip it: [Google Drive](https://drive.google.com/file/d/1FoBbj1qWdf2LyJkxLYnMJ4h4woTQ6QL_/view?usp=sharing), or [**腾讯微云**](https://share.weiyun.com/Hgov20It)
-    - Download the **test_data.zip** (80MB) into the repo root directory **./** and unzip it: [Google Drive](https://drive.google.com/file/d/1f5imMCO0ug_ozj0cDcNYtizom5lBu2PH/view?usp=sharing), or [**腾讯微云**](https://share.weiyun.com/5PCy1rID)
+* **3DMM** file (5.4GB): unzip it to the **./3DMM** folder: [Google
+  Drive](https://drive.google.com/file/d/18BU5y5q3-MFJYARdSWLBjRBLKO1ZbrTH/view?usp=sharing),
+  or [**腾讯微云**](https://share.weiyun.com/ByrUzsJG)
+* **resources.zip** file (2GB): unzip into the repository root directory: [Google
+  Drive](https://drive.google.com/file/d/1FoBbj1qWdf2LyJkxLYnMJ4h4woTQ6QL_/view?usp=sharing),
+  or [**腾讯微云**](https://share.weiyun.com/Hgov20It)
+* **test_data.zip** (80MB): unzip into the repos root directory: [Google
+  Drive](https://drive.google.com/file/d/1f5imMCO0ug_ozj0cDcNYtizom5lBu2PH/view?usp=sharing),
+  or [**腾讯微云**](https://share.weiyun.com/5PCy1rID)
 
 
 ## Running The Code
 
 ### 1. RGBD Face Reconstruction 
 
-To reproduce the results in our paper, please follow the steps provided below.
+To reproduce the results in our paper, please follow the steps provided
+below.
 
 
 **1.1 Data acquisition:**
 
-You may use our [RGBD data capture code](https://github.com/lxk121lalala/RGBD_data_capture) (need an iPhone with TrueDepth camera) to capture RGB-D selfies. The color and depth images are in JPG and PNG formats respectively. The resolution of the color image is 1504 x 1128, and the depth image is of size 640 x 480. If you want to use your own capturing system, please modify the code to suit your case. Below are example RGB-D images exported from our capturing app:
-<div>
-<div align=left><img src="figures/RGBD_data_example.png" alt="RGBD_data_example" width=80%>
-</div>
+You may use our [RGBD data capture
+code](https://github.com/lxk121lalala/RGBD_data_capture) (need an iPhone
+with TrueDepth camera) to capture RGB-D selfies. The color and depth
+images are in JPG and PNG formats respectively. The resolution of the
+color image is 1504 x 1128, and the depth image is of size 640 x 480. If
+you want to use your own capturing system, please modify the code to suit
+your case. Below are example RGB-D images exported from our capturing app:
+<div> <div align=left><img src="figures/RGBD_data_example.png"
+alt="RGBD_data_example" width=80%> </div>
 
 **1.2 Configuration:**
 
@@ -141,36 +162,47 @@ Modify **run_rgbd.sh** as following:
 **1.3 Run:**
 
 Please run the follow command to generate the results.
+
 ```bash
 bash run_opt_rgbd.sh
 ```
 
-The RGBD data will be used for shape optimization and HD texture/normal maps generation. We highly recommend that you use our 3DMM version **AI-NExT-Shape.mat** in order to achieve the same results as reported in our paper. You can also run our code with **BFM**, but the texture map and normal map will not be generated if you use BFM, as BFM does not provide UV maps.
+The RGBD data will be used for shape optimization and HD texture/normal
+maps generation. We highly recommend that you use our 3DMM version
+**AI-NExT-Shape.mat** in order to achieve the same results as reported in
+our paper. You can also run our code with **BFM**, but the texture map and
+normal map will not be generated if you use BFM, as BFM does not provide
+UV maps.
 
 **1.4 Results:**
 
-The produced results will be saved in the **results** floder in data path, including: 
+The produced results will be saved in the **results** floder in data path,
+including: 
 
-    - head.obj: the final mesh file
-    - albedo.png: the final albedo map file
-    - normal.png: the final normal map file
-    - test.mtl: a material description file for simple rendering in meshlab
+* head.obj: the final mesh file
+* albedo.png: the final albedo map file
+* normal.png: the final normal map file
+* test.mtl: a material description file for simple rendering in meshlab
 
-An example of the resulting files is shown below. Note that the our 3DMM version **AI-NExT-Shape.mat** only contains face region, and our code consists of a head completion step. 
+An example of the resulting files is shown below. Note that the our 3DMM
+version **AI-NExT-Shape.mat** only contains face region, and our code
+consists of a head completion step. 
 
 <div>
 <div align=left><img src="figures/RGBD_example.png" alt="RGBD_example" width=80%>
 </div>
 
-<br>
-
 
 ### 2. RGB Face Reconstruction
 
-Our code also supports RGB inputs without depth data, but **note** that running with only RGB inputs cannot achieve comparable reconstruction accuracy as RGBD inputs.
+Our code also supports RGB inputs without depth data, but **note** that
+running with only RGB inputs cannot achieve comparable reconstruction
+accuracy as RGBD inputs.
 
 **2.1 Data acquisition:**
-You may use one image or multiple images of the same person to run our code. Please note that all data of the same identity should be placed into the same folder.
+You may use one image or multiple images of the same person to run our
+code. Please note that all data of the same identity should be placed into
+the same folder.
 
 **2.2 Configuration:**
 

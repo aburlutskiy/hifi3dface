@@ -1,10 +1,29 @@
+import argparse
+import collections
+import json
+import glob
+import math
+import os
+import random
+import time
+
+import tensorflow.compat.v1 as tf
+import numpy as np
+from PIL import Image
+
+from utils.losses import Losses
+from utils.misc import blend_uv
+
+tf.disable_v2_behavior()
+
 """
 This file is part of the repo: https://github.com/tencent-ailab/hifi3dface
 
-If you find the code useful, please cite our paper: 
+If you find the code useful, please cite our paper:
 
 "High-Fidelity 3D Digital Human Creation from RGB-D Selfies."
-Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang, Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
+Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang,
+Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
 arXiv: https://arxiv.org/abs/2010.05562
 
 Copyright (c) [2020] [Tencent AI Lab]
@@ -35,25 +54,6 @@ modified from https://github.com/affinelayer/pix2pix-tensorflow.
 2. Network architecture are modified slightly
 3. We add total-variance loss for texture synthesis, and cosine distance loss for normal synthesis.
 """
-
-import tensorflow as tf
-import numpy as np
-import argparse
-import os
-import json
-import glob
-import random
-import collections
-import math
-import time
-from PIL import Image
-import cv2
-
-import sys
-
-sys.path.append("..")
-from utils.losses import Losses
-from utils.misc import blend_uv
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input_dir", help="path to folder containing images")
@@ -1384,7 +1384,7 @@ def test_texture():
     base_uv = np.asarray(base_uv, np.float32)
 
     with tf.Graph().as_default():
-        graph_def = tf.GraphDef()
+        graph_def = tf.compat.v1.GraphDef()
 
         with open(a.pb_path, "rb") as f:
             graph_def.ParseFromString(f.read())
@@ -1433,7 +1433,7 @@ def test_normal():
     base_normal = np.asarray(base_normal, np.float32)
 
     with tf.Graph().as_default():
-        graph_def = tf.GraphDef()
+        graph_def = tf.compat.v1.GraphDef()
 
         with open(a.pb_path, "rb") as f:
             graph_def.ParseFromString(f.read())

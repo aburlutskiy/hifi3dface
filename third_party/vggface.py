@@ -1,12 +1,14 @@
+import os
+
+import tensorflow as tf
+import numpy as np
+import scipy.io
+
 """ a tensorflow version of VGG face model.
 This snippet is modified from https://github.com/ZZUTK/Tensorflow-VGG-face.git
 The pretrained weights are also downloaded from the same repo
 The "NCHW" data format is added here for running time optimization.
 """
-import tensorflow as tf
-import numpy as np
-import scipy.io
-import os
 
 
 class VGGFace(object):
@@ -37,7 +39,7 @@ class VGGFace(object):
             network = {}
             input_maps = input_maps - average_image
 
-            if data_format == "nchw" or data_format == "NCHW":
+            if data_format.lower() == "nchw":
                 input_maps = tf.transpose(input_maps, [0, 3, 1, 2])
             current = input_maps
             network["inputs"] = input_maps  # no much use
@@ -54,7 +56,7 @@ class VGGFace(object):
                     bias = np.squeeze(bias).reshape(-1)
                     kh, kw, kin, kout = kernel.shape
 
-                    if data_format == "nhwc" or data_format == "NHWC":
+                    if data_format.lower() == "nhwc":
                         kernel_var = tf.get_variable(
                             name=name + "_weight",
                             dtype=tf.float32,
@@ -117,7 +119,7 @@ class VGGFace(object):
                 elif layer_type == "pool":
                     stride = layer[0]["stride"][0][0]
                     pool = layer[0]["pool"][0][0]
-                    if data_format == "nhwc" or data_format == "NHWC":
+                    if data_format.lower() == "nhwc":
                         current = tf.nn.max_pool(
                             current,
                             ksize=(1, pool[0], pool[1], 1),

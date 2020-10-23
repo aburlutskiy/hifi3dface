@@ -1,15 +1,17 @@
 #!/bin/bash
-GPU_NO=0;
-is_bfm="False"
+
+GPU_NO=0
+IS_BFM="False"
+export PYTHONPATH=.
 
 # # constants
-basic_path=$(pwd)/3DMM/files/;
-resources_path=$(pwd)/resources/;
+basic_path=$PWD/3DMM/files/;
+resources_path=$PWD/resources/;
 
 uv_base="$basic_path/AI-NEXT-Albedo-Global.mat"
 uv_regional_pyramid_base="$basic_path/AI-NEXT-AlbedoNormal-RPB/"
 
-if [ $is_bfm == "False" ];then
+if [ $IS_BFM == "False" ];then
     shape_exp_bases="$basic_path/AI-NEXT-Shape-NoAug.mat"
 else
     shape_exp_bases="$resources_path/BFM2009_Model.mat"
@@ -19,7 +21,7 @@ vggpath="$resources_path/vgg-face.mat"
 pb_path=$resources_path/PB/
 
 # # data directories
-ROOT_DIR=$(pwd)/test_data/RGB/test1/single_img/;
+ROOT_DIR=$PWD/test_data/RGB/test1/single_img/;
 img_dir=$ROOT_DIR
 
 ########################################################
@@ -28,12 +30,12 @@ cd ./data_prepare
 
 prepare_dir="$ROOT_DIR/prepare_rgb"
 
-python -u run_data_preparation.py \
-        --GPU_NO=${GPU_NO}  \
-        --mode='test_RGB' \
-        --pb_path=${pb_path} \
-        --img_dir=${img_dir} \
-        --out_dir=${prepare_dir} 
+python3 -u run_data_preparation.py \
+    --GPU_NO=${GPU_NO}  \
+    --mode='test_RGB' \
+    --pb_path=${pb_path} \
+    --img_dir=${img_dir} \
+    --out_dir=${prepare_dir} 
 
 if [ "$?" -ne 0 ]; then echo "data prepare failed"; exit 1; fi
 
@@ -42,7 +44,7 @@ cd ..
 ########################################################
 echo "start RGB opt";
 
-if [ $is_bfm == "False" ];then
+if [ $IS_BFM == "False" ];then
     shape_out_dir=${ROOT_DIR}/our_opt_RGB
 else
     shape_out_dir=${ROOT_DIR}/bfm_opt_RGB
@@ -71,7 +73,7 @@ project_type="Pers"
 
 python run_RGB_opt.py \
 --GPU_NO=${GPU_NO} \
---is_bfm=${is_bfm} \
+--IS_BFM=${IS_BFM} \
 --basis3dmm_path=${shape_exp_bases} \
 --uv_path=${uv_base} \
 --vggpath=${vggpath} \
@@ -98,7 +100,7 @@ if [ "$?" -ne 0 ]; then echo "RGB opt failed"; exit 1; fi
 
 cd ../..
 ########################################################
-if [ $is_bfm == "False" ];then
+if [ $IS_BFM == "False" ];then
     echo "start generate HD texture";
     cd ./texture
 
@@ -165,8 +167,8 @@ echo "output results";
 results_dir=$ROOT_DIR/results
 mkdir -p $results_dir
 
-if [ $is_bfm == "False" ];then
-    scp $(pwd)/test.mtl $results_dir/
+if [ $IS_BFM == "False" ];then
+    scp $PWD/test.mtl $results_dir/
     scp ${shape_out_dir}/face.obj $results_dir/head.obj
     scp $ROOT_DIR/pix2pix_convert/output_for_texture_tex_D.png $results_dir/albedo.png
     scp $ROOT_DIR/pix2pix/out_for_texture_tex_N.png $results_dir/normal.png

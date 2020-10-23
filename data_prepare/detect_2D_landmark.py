@@ -1,10 +1,16 @@
+from tensorflow.python.platform import gfile
+from PIL import Image, ImageOps
+import numpy as np
+import cv2
+
 """
 This file is part of the repo: https://github.com/tencent-ailab/hifi3dface
 
-If you find the code useful, please cite our paper: 
+If you find the code useful, please cite our paper:
 
 "High-Fidelity 3D Digital Human Creation from RGB-D Selfies."
-Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang, Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
+Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang,
+Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang.
 arXiv: https://arxiv.org/abs/2010.05562
 
 Copyright (c) [2020] [Tencent AI Lab]
@@ -27,13 +33,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-import tensorflow as tf
-from tensorflow.python.platform import gfile
-from PIL import Image, ImageOps
-import numpy as np
-import cv2
-import os
 
 
 def bilinear_interpolation(x, y, points):

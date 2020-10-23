@@ -1,10 +1,19 @@
+import os
+
+import cv2
+import os.path as osp
+import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
 """
 This file is part of the repo: https://github.com/tencent-ailab/hifi3dface
 
-If you find the code useful, please cite our paper: 
+If you find the code useful, please cite our paper:
 
 "High-Fidelity 3D Digital Human Creation from RGB-D Selfies."
-Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang, Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
+Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang,
+Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
 arXiv: https://arxiv.org/abs/2010.05562
 
 Copyright (c) [2020] [Tencent AI Lab]
@@ -28,17 +37,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-# from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
-
-import cv2, os, importlib, math
-import os.path as osp
-import numpy as np
-import tensorflow as tf
-from tensorflow.python.platform import gfile
-from PIL import Image, ImageOps
 
 # mtcnn
 import detect_face_with_mtcnn
@@ -53,10 +52,9 @@ import detect_2D_landmark
 from data_prepare_utils import crop_image_and_process_landmark
 import face_segmentation
 
-from data_prepare_utils import load_landmark, write_lmk, write_lmk_no_name
+from data_prepare_utils import load_landmark, write_lmk
 from absl import app, flags
 import glob
-import shutil
 
 
 def detect_2Dlmk_all_imgs(graph_file, img_dir, lmk3D_txt_path, lmk2D_txt_path):

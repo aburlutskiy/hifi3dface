@@ -1,10 +1,24 @@
+import os
+import math
+
+import cv2
+import numpy as np
+import scipy.io as scio
+import tensorflow.compat.v1 as tf
+from numpy.linalg import inv, norm, lstsq
+from numpy.linalg import matrix_rank as rank
+from data_prepare_utils import write_lmk
+
+tf.disable_v2_behavior()
+
 """
 This file is part of the repo: https://github.com/tencent-ailab/hifi3dface
 
-If you find the code useful, please cite our paper: 
+If you find the code useful, please cite our paper:
 
 "High-Fidelity 3D Digital Human Creation from RGB-D Selfies."
-Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang, Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
+Xiangkai Lin*, Yajing Chen*, Linchao Bao*, Haoxian Zhang, Sheng Wang,
+Xuefei Zhe, Xinwei Jiang, Jue Wang, Dong Yu, and Zhengyou Zhang. 
 arXiv: https://arxiv.org/abs/2010.05562
 
 Copyright (c) [2020] [Tencent AI Lab]
@@ -28,18 +42,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-# from __future__ import absolute_import
-# from __future__ import division
-# from __future__ import print_function
-
-import cv2, os, importlib, math
-import os.path as osp
-import numpy as np
-import scipy.io as scio
-import tensorflow as tf
-from numpy.linalg import inv, norm, lstsq
-from numpy.linalg import matrix_rank as rank
-from data_prepare_utils import write_lmk
 
 fixed_pts = (
     np.array(
