@@ -34,7 +34,7 @@ prepare_dir="$ROOT_DIR/prepare"
 
 cd ./data_prepare
 
-python -u run_data_preparation.py \
+python3 -u run_data_preparation.py \
         --GPU_NO=${GPU_NO}  \
         --mode='test_RGBD' \
         --pb_path=${pb_path} \
@@ -51,7 +51,7 @@ cd ./optimization/rgbd
 echo "start RGBD opt process";
 
 echo "step 0: load datas";
-python -u step0_prepare_frontend_data.py \
+python3 -u step0_prepare_frontend_data.py \
         --capture_dir=$img_dir \
         --prepare_dir=${prepare_dir}
 
@@ -59,11 +59,11 @@ if [ "$?" -ne 0 ]; then echo "(step 0) load datas failed"; exit 1; fi
 
 echo "step 1: choose frames : mid-left-right-up";
 if [ $is_only_four_frame == "False" ];then
-    python -u step1A_choose_frames.py \
+    python3 -u step1A_choose_frames.py \
             --prepare_dir=${prepare_dir}/    \
             --prefit=${prefit_dir}/
 else
-    python -u step1B_only4_choose_frames.py \
+    python3 -u step1B_only4_choose_frames.py \
             --prepare_dir=${prepare_dir}/    \
             -prefit=${prefit_dir}/
 fi
@@ -71,14 +71,14 @@ fi
 if [ "$?" -ne 0 ]; then echo "(step 1) choose frames failed"; exit 1; fi
 
 echo "step 2: sparse fusion ";
-python -u step2_sparse_fusion.py \
+python3 -u step2_sparse_fusion.py \
         --IS_BFM=${IS_BFM} \
         --prefit=${prefit_dir}/
 
 if [ "$?" -ne 0 ]; then echo "(step 2) sparse fusion failed"; exit 1; fi
 
 echo "step 3: prefit shape ";
-python -u step3_prefit_shape.py \
+python3 -u step3_prefit_shape.py \
         --GPU_NO=${GPU_NO}  \
         --IS_BFM=${IS_BFM} \
         --prefit=${prefit_dir}/    \
@@ -89,7 +89,7 @@ if [ "$?" -ne 0 ]; then echo "(step 3) prefit shape failed"; exit 1; fi
 
 echo "step 4: prefit Albedo_Global uv ";
 if [ $IS_BFM == "False" ];then
-    python -u step4A_prefit_Albedo_Global.py \
+    python3 -u step4A_prefit_Albedo_Global.py \
             --GPU_NO=${GPU_NO}  \
             --IS_BFM=${IS_BFM} \
             --basis3dmm_path=${shape_exp_bases}  \
@@ -97,7 +97,7 @@ if [ $IS_BFM == "False" ];then
             --resources_path=${resources_path}  \
             --output_dir=${prefit_dir}/
 else
-    python -u step4B_prefit_bfm_rgb.py \
+    python3 -u step4B_prefit_bfm_rgb.py \
             --GPU_NO=${GPU_NO}  \
             --num_of_img=4 \
             --IS_BFM=${IS_BFM} \
@@ -137,7 +137,7 @@ is_fixed_pose="False"
 is_add_head_mirrow="False"
 is_add_head_male="True"
 
-python step5_run_RGBD_opt.py \
+python3 step5_run_RGBD_opt.py \
 --GPU_NO=${GPU_NO} \
 --IS_BFM=${IS_BFM} \
 --basis3dmm_path=${shape_exp_bases} \
@@ -221,7 +221,7 @@ if [ $IS_BFM == "False" ];then
     OUT_DIR=$ROOT_DIR/pix2pix_convert
 
     echo "step3: convert_texture_domain";
-    python -u step3_convert_texture_domain.py \
+    python3 -u step3_convert_texture_domain.py \
         --input_fit_dir=$FIT_DIR \
         --input_pix2pix_dir=$PIX_DIR \
         --input_unwrap_dir=$UNWRAP_DIR \
