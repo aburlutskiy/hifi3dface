@@ -53,13 +53,6 @@ fi
 
 BASENAME=hifi3dface-base-ubuntu
 
-if ! docker image ls | grep -q $BASENAME;then
-    # Miserere...
-    # Ubuntu is MADDENING SLOW on package installs, so
-    # I put all the updates and basic installations on
-    # this separate image in the case you want to rebuild
-    # the main docker image without too much hassle:
-    docker build -t $BASENAME -f Dockerfile.base-ubuntu .
-fi
+docker build -t $BASENAME -f Dockerfile.base-ubuntu .
 
 docker build -t hifi3dface .
